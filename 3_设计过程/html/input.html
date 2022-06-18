@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en" class="no-js">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>扶壁式挡土墙稳定性检算系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap-combined.min.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    <script type='text/javascript' src='js/jquery-1.11.1.min.js'></script>
+    <script type='text/javascript' src='js/input.js'></script>
+    <script type = 'text/javascript' async src = 'js/plotly.min.js'></script>
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            showProcessingMessages: false,
+            messageStyle: "none",
+            extensions: ["tex2jax.js"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+            tex2jax: {
+                inlineMath:  [ ["$", "$"] ],
+                displayMath: [ ["$$","$$"] ],
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre','code','a'],
+                ignoreClass:"comment-content"
+            },
+            "HTML-CSS": {
+                availableFonts: ["STIX","TeX"],
+                showMathMenu: false
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+        </script>
+        <script async src="js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<style type="text/css">
+    body {
+        background: #f8f8f7;
+        font-family: 'Montserrat', sans-serif;
+        /* color: #fff; */
+        line-height: 1.3;
+        -webkit-font-smoothing: antialiased;
+        position:relative;
+    }
+    td{
+     padding: 5px;   
+    }
+    #quad {
+        margin-top: 30px;
+    }
+
+    legend {
+        font-weight: 1000;
+        /* color: #fff; */
+    }
+    .btn-block{
+    width: 30%;
+    }
+    #footer{
+    line-height: 1.15;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    outline: 0;
+    display: block;
+    position: relative;
+    clear: both;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 400;
+    font-family: Consolas,Menlo,Monaco,"lucida console","Liberation Mono","Courier New","andale mono",monospaceX,monospace,sans-serif;
+    padding: 1.25rem 0;
+    background-color: #3a3737cc;
+    transition: 0.5s ease all;
+    margin-right: -10px;
+    margin-left: -10px;
+    width: calc(100% - -20px);
+    color: #f0f0f0;
+    margin-top: 41px;
+    }
+    .center{
+        padding-left: 35%;
+        padding-top: 20px;
+    }
+    .tips {
+        display: none;
+        border-radius: 10px;
+        padding: 20px;
+        position: relative;
+    }
+
+    #img_chi {
+        width: 100%;
+    }
+    #show_po_div{
+        display: none;
+    }
+    .btn-success {
+        color: #fff;
+        background-color: #38b03f;
+        border-color: #329d38;
+    }
+    .btn-danger {
+    color: #fff;
+    background-color: #ea644a;
+    border-color: #e75033;
+}
+.success{
+    color: #38b03f;
+}
+.danger{
+    color: #e75033;
+}
+.btn-lg {
+    padding: 10px 16px;
+    font-size: 16px;
+    line-height: 1.25;
+    border-radius: 4px;
+}
+#mask{
+    display: none;
+}
+#result_show{
+    display: none;
+}
+#result_show tr:hover{
+	background-color: #cdf1cf;
+}
+#stress_chart{
+    width: 480;
+    height: 450;
+    overflow: hidden;
+}
+</style>
+
+<body>
+    <div id="mask">
+        <div id="shade" style=" background: rgba(0,0,0,0.8); position: absolute; top: 0px; left: 0px; z-index: 300; height: 100%; width: 100%;"></div>
+        <img async src="img/loading.gif" style="position: fixed; top: 20%; left: 40%; z-index: 300; height: 30%">
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="span6">
+                <fieldset>
+                    <legend>挡土墙几何数据 <i class="help"><svg t="1649146043722" viewBox="0 0 1024 1024" version="1.1"
+                                xmlns="http://www.w3.org/2000/svg" p-id="2212" data-spm-anchor-id="a313x.7781069.0.i1"
+                                width="20" height="20">
+                                <path
+                                    d="M512 1024C229.216 1024 0 794.752 0 512 0 229.216 229.216 0 512 0 794.752 0 1024 229.216 1024 512 1024 794.752 794.752 1024 512 1024ZM473.28 826.752 551.328 826.752 551.328 747.488 473.28 747.488 473.28 826.752ZM655.008 243.616C618.88 211.84 571.584 196 512.96 196 457.696 196 412.064 212.16 376.096 244.448 340.16 276.736 319.808 320.384 315.072 375.392L396.288 375.392C407.968 297.536 445.568 275.392 512.224 275.392 546.368 275.392 575.584 269.12 596.672 290.144 617.792 311.136 628.352 337.856 628.352 370.304 628.352 386.912 624.448 402.688 616.704 417.472 608.896 432.288 588.96 453.536 556.896 481.152 524.8 508.768 502.816 534.816 490.88 559.232 478.944 583.616 472.832 616.768 472.832 669.216L551.616 669.216C551.616 629.44 550.176 606.304 557.952 589.216 565.728 572.192 586.688 549.248 620.832 520.48 655.008 491.712 678.272 465.504 690.624 441.792 702.944 418.112 709.152 392.448 709.152 364.8 709.152 315.712 691.104 275.296 655.008 243.616Z"
+                                    p-id="2213" fill="#707070" data-spm-anchor-id="a313x.7781069.0.i0" class="selected">
+                                </path>
+                            </svg></i></legend>
+
+                    <table id="design_table" align="left" cellpadding="1" cellspacing="1" style="width: 500px;">
+                        <tbody>
+                            <tr>
+                                <td><label h="">挡土墙高度H：<input id="H" placeholder="单位为m" type="text"  onchange="check_limit(this,6,10)"></label></td>
+                                <td><label h="">挡土墙每节长度L：<input id="L" placeholder="单位为m" type="text"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label h="">趾板高度H2：<input id="H2" placeholder="单位为m" type="text"></label></td>
+                                <td><label h="">扶壁宽度B_fb：<input id="B_fb" placeholder="单位为m" type="text"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label h="">趾板近墙面板侧高度Hzd：<input id="Hzd" placeholder="单位为m" type="text"></label>
+                                </td>
+                                <td><label h="">单节扶壁墙扶壁数量num_fb：<input id="num_fb" placeholder="单位为个"
+                                            type="text"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label h="">墙踵板高度H3：<input id="H3" placeholder="单位为m" type="text"></label></td>
+                                <td onclick="change_BT()"><label h="">是否设凸榫：<input id="have_tenon" checked="checked"
+                                            type="checkbox"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label h="">趾板宽度B2：<input id="B2" placeholder="单位为m" type="text"></label></td>
+                                <td><label h="">凸榫高度HT：<input id="HT" placeholder="单位为m" type="text"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label h="">面板宽度B：<input id="B" placeholder="单位为m" type="text"></label></td>
+                                <td><label h="">凸榫宽度BT：<input id="BT" placeholder="单位为m" type="text"></label></td>
+                            </tr>
+                            <tr>
+                                <td><label h="">踵板宽度B3：<input id="B3" placeholder="单位为m" type="text"></label></td>
+                                <td><label h="">凸榫外缘距墙趾的距离BT1：<input id="BT1" placeholder="单位为m" type="text"></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label h="">墙趾埋深：<input id="cover_h" placeholder="单位为m" type="text"></label></td>
+                                <td>&nbsp;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+            <div class="span6">
+                <div class="tips" id="chi">
+                    <img id="img_chi" alt="挡墙尺寸示意图" src="img/尺寸.svg" />
+                </div>
+                <canvas id="quad" width="650" height="600" style="background: rgb(248, 248, 247)"></canvas>
+            </div>
+        </div>
+
+        <div class="row">
+            <p></p>
+            <p></p>
+            <div class="span12">
+                <fieldset>
+                    <legend>坡线土柱数据 <i id="help_po"><svg t="1649146043722" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2212" data-spm-anchor-id="a313x.7781069.0.i1" width="20" height="20">
+                                <path d="M512 1024C229.216 1024 0 794.752 0 512 0 229.216 229.216 0 512 0 794.752 0 1024 229.216 1024 512 1024 794.752 794.752 1024 512 1024ZM473.28 826.752 551.328 826.752 551.328 747.488 473.28 747.488 473.28 826.752ZM655.008 243.616C618.88 211.84 571.584 196 512.96 196 457.696 196 412.064 212.16 376.096 244.448 340.16 276.736 319.808 320.384 315.072 375.392L396.288 375.392C407.968 297.536 445.568 275.392 512.224 275.392 546.368 275.392 575.584 269.12 596.672 290.144 617.792 311.136 628.352 337.856 628.352 370.304 628.352 386.912 624.448 402.688 616.704 417.472 608.896 432.288 588.96 453.536 556.896 481.152 524.8 508.768 502.816 534.816 490.88 559.232 478.944 583.616 472.832 616.768 472.832 669.216L551.616 669.216C551.616 629.44 550.176 606.304 557.952 589.216 565.728 572.192 586.688 549.248 620.832 520.48 655.008 491.712 678.272 465.504 690.624 441.792 702.944 418.112 709.152 392.448 709.152 364.8 709.152 315.712 691.104 275.296 655.008 243.616Z" p-id="2213" fill="#707070" data-spm-anchor-id="a313x.7781069.0.i0" class="selected">
+                                </path>
+                            </svg></i></legend>
+                    <div class="tips" id="img_po">
+                        <img id="img_chi" alt="挡墙尺寸示意图" src="img/po.png">
+                    </div>
+
+                    <div id="show_po_div" style="display: block;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>坡线水平投影</th>
+                                    <th>坡线竖直投影</th>
+                                    <th>换算土柱高度</th>
+                                    <th>换算土柱宽度</th>
+                                    <th>换算土柱距当前坡线起点距离</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="show_po"><tr></tr><tr></tr><tr>
+        <td>3</td>
+        <td>2</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><input type="button" class="btn btn-danger" value="删除此行" onclick="delate(this); draw_po('quad')"></td>
+    </tr><tr>
+        <td>5</td>
+        <td>0</td>
+        <td>3.1</td>
+        <td>3.2</td>
+        <td>1</td>
+        <td><input type="button" class="btn btn-danger" value="删除此行" onclick="delate(this); draw_po('quad')"></td>
+    </tr></tbody>
+                        </table>
+                    </div>
+
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td><label>坡线水平投影：</label> <input id="po_h" placeholder="单位为m" type="text"></td>
+                                <td><label>坡线竖直投影：</label> <input id="po_v" placeholder="单位为m" type="text"></td>
+                                <td><label>换算土柱高度：</label> <input id="tu_h" placeholder="没有则不填，单位为m" type="text">
+                                </td>
+                                <td><label>换算土柱宽度：</label> <input id="tu_w" placeholder="没有则不填，单位为m" type="text">
+                                </td>
+                                <td><label>换算土柱距当前坡线起点距离：</label> <input id="tu_j" placeholder="没有则不填，单位为m" type="text">
+                                </td>
+                                <td><button class="btn btn-success" onclick="add_tu(); draw_po('quad')">添加</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+        <div class="row">
+            <p></p>
+            <p></p>
+            <div class="span12">
+                    <fieldset>
+                        <legend>参数设置</legend>
+
+                        <table align="left" cellpadding="1" cellspacing="1" style="width: 500px;">
+                            <tbody>
+                                <tr>
+                                   
+                                    <td><label h="">地基类型：<select id="base_type">
+                                        <option value="a" selected="selected">未风化至弱风化的硬质岩石</option>
+                                        <option value="b">除上项以外的其他岩石</option>
+                                        <option value="c">基本承载力大于200kPa的土层</option>
+                                        <option value="d">除上项以外的其他土层</option>
+                                    </select> </label></td>
+                                    <td><label h="">地基摩擦系数：<input id="f" type="text" placeholder="无单位"></label></td>
+                                    <td><label h="">地基容许应力：<input id="base_sigma" placeholder="单位为kPa" type="text"></label></td>
+                                </tr>
+                                <tr>
+                                    <td><label h="">墙体重度：<input id="gamma_wall" placeholder="单位为kN/m^3" type="text"></label></td>
+                                    <td><label h="">填土内摩擦角：<input id="phi" placeholder="单位为度" type="text" ></label></td>
+                                    <td><label h="">填土重度：<input id="gamma_soil" placeholder="单位为kN/m^3" type="text"></label></td>
+                                </tr>
+                                <tr>  
+                                    <td><label h="">计算精度：<input id="accuracy" placeholder="单位为度" type="text" value = "0.5"></label></td>
+                                    <td><label h="">水平地震系数：<input id="k_H" type="text" placeholder="无单位" ></label></td>
+                                    <td><label h="">综合影响因素：<input id="C_z" placeholder="一般取0.25" type="text" value = "0.25"></label></td>
+                                </tr>
+                                <tr>  
+                                    <td><label h="">结构重要性系数：<input id="gamma_0" placeholder="无单位" type="text" ></label></td>
+                                   
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                    <div class="center"><button onclick="submit_data_to_server()" class="btn btn-block btn-success btn-lg">开始验算</button></div>
+            </div>
+        </div>
+        <hr/>
+        <div id="result_show">
+            <h2 class = "center">检算结果</a></h2>
+            <div class="row">
+                <div class="span6">
+                    <fieldset>
+                        <legend>基本信息</legend>
+                        <table align="left" cellpadding="1" cellspacing="1" style="width: 500px;">
+                            <tbody>
+
+                                <tr>
+                                    <td >第一破裂面夹角：<span class="result_text" id = "result_theta" ></span>$^o$</td>
+                                </tr>
+                                <tr>
+                                    <td ><span id = "result_have_2_plm">第二破裂面夹角：</span><span  class="result_text" id = "result_alpha" ></span>$^o$</td>
+                                </tr>
+                                <tr>
+                                    <td >基底宽度：<span  class="result_text" id = "result_B" ></span>$m$</td>
+                                </tr>
+                                <tr>
+                                    <td >挡土墙截面积：<span  class="result_text" id = "result_area_G" ></span>$m^2$</td>
+                                </tr>
+                                <tr>
+                                    <td ><span id = "result_area_W_desc">真实墙背与第二破裂面间土体截面积：</span><span  class="result_text" id = "result_area_W" ></span>$m^2$</td>
+                                </tr>
+                                <tr>
+                                    <td ><span id = "result_area_W1_desc">第一破裂面与第二破裂面间土体截面积：</span><span  class="result_text" id = "result_area_W1" ></span>$m^2$</td>
+                                </tr>
+                                <tr>
+                                    <td >总稳定弯矩：<span  class="result_text" id = "result_sum_M_y" ></span>kN·m</td>
+                                </tr>
+                                <tr>
+                                    <td >总倾覆弯矩：<span  class="result_text" id = "result_sum_M_0" ></span>kN·m</td>
+                                </tr>
+                                <tr>
+                                    <td >总竖向力：<span  class="result_text" id = "result_sum_N" ></span>kN</td>
+                                </tr>
+                                <tr>
+                                    <td ><a id = "stress_chart" target="_blank" >土压力应力分布图</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                    <fieldset>
+                        <legend>受力计算结果</legend>
+
+                        <table cellpadding="1" cellspacing="3" style="width: 500px;">
+                            <tbody id = "result_force">
+                                <tr>
+                                    <th>名称</th>
+                                    <th>大小</th>
+                                    <th>水平分力</th>
+                                    <th>竖直分力</th>
+                                    <th>作用点(墙趾下点为原点)</th>
+                                </tr>
+                                <tr id="result_E_a">
+                                    <td >主动土压力$E_a$</td>
+                                </tr>
+                                <tr id="result_G">
+                                    <td >挡墙重力G</td>
+                                </tr>
+                                <tr id="result_W">
+                                    <td >墙踵上土体自重W</td>
+                                </tr>
+                                <tr id="result_W_toe">
+                                    <td >墙墙趾上土体自重</td>
+                                </tr>
+                                <tr id="result_W1">
+                                    <td >滑动体自重$W_1$</td>
+                                </tr>
+                                <tr id="result_G_p">
+                                    <td >挡墙受地震力$G_p$</td>
+                                </tr>
+                                <tr id="result_W_p">
+                                    <td >墙踵上土体受地震力$W_p$</td>
+                                </tr>
+                                <tr id="result_W1_p">
+                                    <td >滑动体受地震力$W_{1p}$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+                <div class="span6">
+                    <div class = "row" id = "result3d"></div>
+                </div>
+            </div>
+            <div class="row">
+                <p></p>
+                <p></p>
+                <div class="span6">
+                        <fieldset>
+                            <legend>永久荷载+主可变荷载</legend>
+                            <table align="left" cellpadding="1" cellspacing="1" style="width: 500px;">
+                                <tbody id="check_1">
+                                    <tr>
+                                        <th>检测项目</th>
+                                        <th>不安全荷载</th>
+                                        <th>安全荷载</th>
+                                        <th>检算结果</th>
+                                    </tr>
+                                    <tr id="result_K_c"> <td >滑动稳定性</td></tr>
+                                    <tr id="result_K_0"> <td >倾覆稳定性</td></tr>
+                                    <tr id="result_e">   <td >偏心距e</td></tr>
+                                    <tr id="result_sigma_1k"> <td >墙趾处压应力$\sigma_{1k}$</td></tr>
+                                    <tr id="result_sigma_2k"> <td >墙踵处压应力$\sigma_{2k}$</td></tr>
+                                    <tr id="result_sigma_pk"> <td >平均压应力$\sigma_{pk}$</td></tr>
+                                </tbody>
+                            </table>
+                        </fieldset>
+                </div>
+                <div class="span6">
+                    <fieldset>
+                        <legend>永久荷载+主可变荷载+地震荷载</legend>
+                        <table align="left" cellpadding="1" cellspacing="1" style="width: 500px;">
+                            <tbody id="check_4">
+                                <tr>
+                                    <th>检测项目</th>
+                                    <th>不安全荷载</th>
+                                    <th>安全荷载</th>
+                                    <th>检算结果</th>
+                                </tr>
+                                <tr id="result_K_c"> <td >滑动稳定性</td></tr>
+                                <tr id="result_K_0"> <td >倾覆稳定性</td></tr>
+                                <tr id="result_e">   <td >偏心距e</td></tr>
+                                <tr id="result_sigma_1k"> <td >墙趾处压应力$\sigma_{1k}$</td></tr>
+                                <tr id="result_sigma_2k"> <td >墙踵处压应力$\sigma_{2k}$</td></tr>
+                                <tr id="result_sigma_pk"> <td >平均压应力$\sigma_{pk}$</td></tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="row">
+                <p></p>
+                <p></p>
+                <div class="span12">
+                        <fieldset>
+                            <legend>最终结果</legend>
+                            <h4 class="result_text" id="result_con"></h4>
+                        </fieldset>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+<footer id="footer">
+    <div class="container" data-index="179">
+        <p>扶壁式挡土墙稳定性检算系统 ~ 2022</p>
+    </div>
+</footer>
+</body>
+<script>
+    draw_po("quad")
+    for (let i of document.querySelector("#design_table").querySelectorAll("input")) {
+        i.addEventListener("change",function(){ 
+            draw_po("quad");
+        })
+    }
+    $(document).ready(function () {
+        $(".help").mouseover(function () {
+            $("#chi").show();
+        });
+        $(".help").mouseout(function () {
+            $("#chi").hide();
+        });
+        $("#help_po").mouseover(function () {
+            $("#img_po").show();
+        });
+        $("#help_po").mouseout(function () {
+            $("#img_po").hide();
+        });
+        $("#img_po").mouseover(function () {
+            $("#img_po").show();
+        });
+        $("#img_po").mouseout(function () {
+            $("#img_po").hide();
+        });
+
+    })
+
+    a = [
+    "8.5",
+    "6",
+    "0.4",
+    "0.4",
+    "0.5",
+    "2",
+    "",
+    "on",
+    "1.5",
+    "",
+    "0.4",
+    "",
+    "2.5",
+    "",
+    "1.5",
+    "删除此行",
+    "删除此行",
+    "5",
+    "0",
+    "3.1",
+    "3.2",
+    "1",
+    "0.5",
+    "500",
+    "25",
+    "35",
+    "19",
+    "0.5",
+    "0",
+    "0.25",
+    "1.1"
+]
+    
+    
+    $("input").each((i,e)=>{e.value = a[i]})
+// $("input").each((i,e)=>{a.push(e.value)})
+</script>
+
+</html>

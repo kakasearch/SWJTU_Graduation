@@ -1,0 +1,30 @@
+graph TD
+
+subgraph  inputall[数据输入]
+
+subgraph  input[输入模块]
+s1(输入挡墙数据) -->
+s2(输入填土坡线数据) -->
+s3(输入换算土柱数据) -->
+s4("输入各物理及系统参数")
+end
+
+subgraph  check[数据检查模块]
+c1(检查挡墙数据) -->
+c2(检查填土坡线数据) -->
+c3(检查换算土柱数据) -->
+c4("检查各物理及系统参数")
+end
+
+subgraph show[可视化模块]
+show1(绘制挡土墙) -->
+show2(绘制填土坡线) -->
+show3(绘制换算土柱)
+end
+end
+
+
+
+
+
+
